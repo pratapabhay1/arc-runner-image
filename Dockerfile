@@ -26,10 +26,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Semgrep
-RUN pip3 install semgrep
+RUN pip3 install --break-system-packages semgrep
 
-# Install Detect Secrets
-RUN pip3 install detect-secrets
+# Install Detect Secret
+RUN pip3 install --break-system-packages detect-secrets
 
 # Install Trivy
 RUN wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | tee /usr/share/keyrings/trivy.gpg > /dev/null && \
