@@ -1,0 +1,41 @@
+name: Parallel Runner Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  parallel-scan:
+    runs-on: arc-runner-set
+
+    strategy:
+      fail-fast: false
+      matrix:
+        scan: [1, 2, 3, 4, 5]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Runner Information
+        run: |
+          echo "Running on runner:"
+          hostname
+          echo "Runner Name:"
+          echo $RUNNER_NAME
+          echo "Job Number:"
+          echo ${{ matrix.scan }}
+
+      - name: Simulate Security Scan
+        run: |
+          echo "Starting scan job ${{ matrix.scan }}"
+          sleep 120
+          echo "Completed scan job ${{ matrix.scan }}"
+
+      - name: System Information
+        run: |
+          echo "CPU Info:"
+          nproc
+          echo "Memory:"
+          free -h
+          echo "Disk:"
+          df -h
