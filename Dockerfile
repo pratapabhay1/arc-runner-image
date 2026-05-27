@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     python3 \
     python3-pip \
+    python3-venv \
     docker.io \
     nodejs \
     npm \
@@ -25,16 +26,20 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Semgrep
-RUN pip3 install --break-system-packages semgrep
+# Create Python virtual environment
+RUN python3 -m venv /opt/security-tools
 
-# Install Detect Secret
-RUN pip3 install --break-system-packages detect-secrets
+# Install Semgrep + Detect Secrets inside venv
+RUN /opt/security-tools/bin/pip install --upgrade pip && \
+    /opt/security-tools/bin/pip install semgrep detect-secrets
 
 # Install Trivy
 RUN wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | tee /usr/share/keyrings/trivy.gpg > /dev/null && \
     echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | tee /etc/apt/sources.list.d/trivy.list && \
     apt-get update && \
     apt-get install -y trivy
+
+# Add venv binaries to PATH
+ENV PATH="/opt/security-tools/bin:$PATH"
 
 USER runner
