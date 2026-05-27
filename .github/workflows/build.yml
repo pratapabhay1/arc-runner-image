@@ -5,7 +5,7 @@ on:
 
 jobs:
   parallel-scan:
-    runs-on: arc-runner-set
+    runs-on: shared-runners
 
     strategy:
       fail-fast: false
